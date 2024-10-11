@@ -2,6 +2,17 @@
 <html lang="en">
 
 <head>
+  <meta property="og:title" content="PennyWise - Expense Tracker" />
+  <meta property="og:description" content="Track your expenses and manage your savings with PennyWise." />
+  <meta property="og:image" content="https://github.com/muhammedmueen/PennyWise/blob/main/images/logo.png" />
+  <meta property="og:url" content="https://muhammedmueen.github.io/PennyWise/" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PennyWise - Expense Tracker" />
+  <meta name="twitter:description" content="Track your expenses and manage your savings with PennyWise." />
+  <meta name="twitter:image" content="https://github.com/muhammedmueen/PennyWise/blob/main/images/logo.png" />
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PennyWise</title>
@@ -97,7 +108,6 @@
       background-color: rgba(242, 161, 141, 0.1);
     }
 
-    /* Increased input field size, font size, and visibility */
     input[type="number"],
     input[type="text"],
     input[type="date"] {
@@ -119,7 +129,6 @@
       outline: none;
     }
 
-    /* Fixed currency symbol positioning */
     .currency-input {
       position: relative;
     }
@@ -148,7 +157,6 @@
     </h1>
     <p class="text-2xl text-center mb-8 text-gray-800">Track every penny, grow your savings.</p>
 
-    <!-- Expense Form -->
     <div class="card mb-8 p-6">
       <h2 class="text-2xl mb-4 text-gray-700">Add Expense</h2>
       <form id="expenseForm" class="space-y-4">
@@ -181,7 +189,6 @@
       </form>
     </div>
 
-    <!-- Expense Table -->
     <div class="card mb-8 p-6">
       <h2 class="text-2xl mb-4 text-gray-700">Expense List</h2>
       <div class="overflow-x-auto">
@@ -199,7 +206,6 @@
       </div>
     </div>
 
-    <!-- Total Expenses -->
     <div class="card mb-8 p-6">
       <h2 class="text-2xl mb-2 text-gray-700">Total Expenses</h2>
       <p id="totalExpenses" class="text-3xl font-bold text-indigo-600">
@@ -207,7 +213,6 @@
       </p>
     </div>
 
-    <!-- Charts -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="card p-6">
         <h2 class="text-2xl mb-4 text-gray-700">Expenses by Category</h2>
@@ -420,7 +425,6 @@
         }
       });
 
-      // Initial Rendering
       renderExpenses();
       feather.replace();
     });
