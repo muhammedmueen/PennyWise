@@ -41,7 +41,9 @@ To run the PennyWise application locally, follow these steps:
 
 ![image](https://github.com/user-attachments/assets/d6515e4a-bdc9-4382-9a77-6e9786ba91c7)
 
+## Deployment
 
+[Visit My Project](https://muhammedmueen.github.io/PennyWise/)
 
 
 ## Usage
