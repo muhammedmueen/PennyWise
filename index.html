@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PennyWise</title>
+  <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;500&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    body {
+      font-family: "Montserrat", sans-serif;
+      background: linear-gradient(135deg, #e4e4e4, #f7f7f7);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-image: linear-gradient(45deg,
+          #fafafa 25%,
+          transparent 25%,
+          transparent 75%,
+          #fafafa 75%,
+          #fafafa),
+        linear-gradient(45deg,
+          #fafafa 25%,
+          transparent 25%,
+          transparent 75%,
+          #fafafa 75%,
+          #fafafa);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
+      opacity: 0.05;
+      z-index: -1;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: "Playfair Display", serif;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #f4d58d, #f2a18d);
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(to right, #e0c17a, #e0907a);
+      box-shadow: 0 0 15px rgba(244, 213, 141, 0.5);
+    }
+
+    .delete-btn {
+      cursor: pointer;
+      color: #f2a18d;
+      transition: color 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      color: #e0907a;
+    }
+
+    .table {
+      color: #333;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: rgba(242, 161, 141, 0.1);
+    }
+
+    /* Increased input field size, font size, and visibility */
+    input[type="number"],
+    input[type="text"],
+    input[type="date"] {
+      height: 2.75rem;
+      font-size: 1.1rem;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid #cbd5e0;
+      border-radius: 0.375rem;
+      background-color: #ffffff;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    input[type="date"]:focus {
+      border-color: #f2a18d;
+      box-shadow: 0 0 0 3px rgba(242, 161, 141, 0.2);
+      outline: none;
+    }
+
+    /* Fixed currency symbol positioning */
+    .currency-input {
+      position: relative;
+    }
+
+    .currency-symbol {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      color: #718096;
+      pointer-events: none;
+    }
+
+    #amount {
+      padding-left: 2rem;
+    }
+  </style>
+</head>
+
+<body class="text-gray-800">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl text-center mb-8 text-gray-800">
+      <img src="images/" alt="PennyWise Logo" class="h-12 w-auto inline-block" />
+      PennyWise
+    </h1>
+    <p class="text-2xl text-center mb-8 text-gray-800">Track every penny, grow your savings.</p>
+
+    <!-- Expense Form -->
+    <div class="card mb-8 p-6">
+      <h2 class="text-2xl mb-4 text-gray-700">Add Expense</h2>
+      <form id="expenseForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+            <div class="currency-input">
+              <span class="currency-symbol">₹</span>
+              <input type="number" id="amount"
+                class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                placeholder="0.00" required />
+            </div>
+          </div>
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <input type="text" id="category"
+              class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              placeholder="e.g., Food" required />
+          </div>
+          <div>
+            <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <input type="date" id="date"
+              class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              required />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary text-white font-bold py-2 px-4 rounded-full w-full md:w-auto">
+          Add Expense
+        </button>
+      </form>
+    </div>
+
+    <!-- Expense Table -->
+    <div class="card mb-8 p-6">
+      <h2 class="text-2xl mb-4 text-gray-700">Expense List</h2>
+      <div class="overflow-x-auto">
+        <table class="table-auto w-full">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="px-4 py-2 text-left">Amount</th>
+              <th class="px-4 py-2 text-left">Category</th>
+              <th class="px-4 py-2 text-left">Date</th>
+              <th class="px-4 py-2 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody id="expenseTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Total Expenses -->
+    <div class="card mb-8 p-6">
+      <h2 class="text-2xl mb-2 text-gray-700">Total Expenses</h2>
+      <p id="totalExpenses" class="text-3xl font-bold text-indigo-600">
+        ₹ 0.00
+      </p>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="card p-6">
+        <h2 class="text-2xl mb-4 text-gray-700">Expenses by Category</h2>
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div class="card p-6">
+        <h2 class="text-2xl mb-4 text-gray-700">Expenses Over Time</h2>
+        <canvas id="timeChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+      const expenseForm = document.getElementById("expenseForm");
+      const expenseTableBody = document.getElementById("expenseTableBody");
+      const totalExpensesElement = document.getElementById("totalExpenses");
+
+      const categoryChartCtx = document
+        .getElementById("categoryChart")
+        .getContext("2d");
+      const timeChartCtx = document
+        .getElementById("timeChart")
+        .getContext("2d");
+
+      let categoryChart, timeChart;
+
+      function updateCharts() {
+        const categories = {};
+        const dates = {};
+
+        expenses.forEach((expense) => {
+          const { amount, category, date } = expense;
+          categories[category] =
+            (categories[category] || 0) + parseFloat(amount);
+          dates[date] = (dates[date] || 0) + parseFloat(amount);
+        });
+
+        const categoryLabels = Object.keys(categories);
+        const categoryData = Object.values(categories);
+
+        const dateLabels = Object.keys(dates).sort();
+        const dateData = dateLabels.map((date) => dates[date]);
+
+        if (categoryChart) categoryChart.destroy();
+        if (timeChart) timeChart.destroy();
+
+        categoryChart = new Chart(categoryChartCtx, {
+          type: "doughnut",
+          data: {
+            labels: categoryLabels,
+            datasets: [
+              {
+                data: categoryData,
+                backgroundColor: [
+                  "#f4d58d",
+                  "#f2a18d",
+                  "#d1a7b8",
+                  "#f6e5f5",
+                  "#e0c17a",
+                ],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "right",
+              },
+              title: {
+                display: true,
+                text: "Expenses by Category",
+                font: {
+                  family: "Playfair Display",
+                  size: 16,
+                },
+              },
+            },
+            animation: {
+              animateScale: true,
+              animateRotate: true,
+            },
+          },
+        });
+
+        timeChart = new Chart(timeChartCtx, {
+          type: "line",
+          data: {
+            labels: dateLabels,
+            datasets: [
+              {
+                label: "Amount Spent Over Time",
+                data: dateLabels.map((date) => ({
+                  x: date,
+                  y: dates[date],
+                })),
+                borderColor: "#f2a18d",
+                backgroundColor: "rgba(242, 161, 141, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: {
+                type: "time",
+                time: {
+                  unit: "day",
+                  displayFormats: {
+                    day: "MMM d",
+                  },
+                },
+                title: {
+                  display: true,
+                  text: "Date",
+                  font: {
+                    family: "Montserrat",
+                    size: 14,
+                  },
+                },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Amount (₹)",
+                  font: {
+                    family: "Montserrat",
+                    size: 14,
+                  },
+                },
+                beginAtZero: true,
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            animation: {
+              duration: 2000,
+              easing: "easeOutQuart",
+            },
+          },
+        });
+      }
+
+      function addExpenseToTable(expense, index) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td class="border px-4 py-2">₹${parseFloat(expense.amount).toFixed(
+          2
+        )}</td>
+            <td class="border px-4 py-2">${expense.category}</td>
+            <td class="border px-4 py-2">${expense.date}</td>
+            <td class="border px-4 py-2">
+              <span class="delete-btn" data-index="${index}">
+                <i data-feather="trash-2"></i>
+              </span>
+            </td>
+          `;
+        expenseTableBody.appendChild(row);
+        feather.replace();
+      }
+
+      function updateTotalExpenses() {
+        const total = expenses.reduce(
+          (sum, expense) => sum + parseFloat(expense.amount),
+          0
+        );
+        totalExpensesElement.textContent = `₹ ${total.toFixed(2)}`;
+      }
+
+      function renderExpenses() {
+        expenseTableBody.innerHTML = "";
+        expenses.forEach((expense, index) =>
+          addExpenseToTable(expense, index)
+        );
+        updateCharts();
+        updateTotalExpenses();
+      }
+
+      expenseForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const amount = document.getElementById("amount").value;
+        const category = document.getElementById("category").value;
+        const date = document.getElementById("date").value;
+
+        const newExpense = { amount, category, date };
+        expenses.push(newExpense);
+
+        localStorage.setItem("expenses", JSON.stringify(expenses));
+
+        renderExpenses();
+        expenseForm.reset();
+      });
+
+      expenseTableBody.addEventListener("click", function (e) {
+        if (e.target.closest(".delete-btn")) {
+          const index = e.target
+            .closest(".delete-btn")
+            .getAttribute("data-index");
+          expenses.splice(index, 1);
+          localStorage.setItem("expenses", JSON.stringify(expenses));
+          renderExpenses();
+        }
+      });
+
+      // Initial Rendering
+      renderExpenses();
+      feather.replace();
+    });
+  </script>
+</body>
+
+</html>
